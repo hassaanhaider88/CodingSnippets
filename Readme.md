@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://ik.imagekit.io/hassaan/Code_Snippets_By_HMK_CodeWeb_nz6EWS0Va" width="100%" height="300"  alt="Project Logo"/>
+  <img src="https://ik.imagekit.io/hassaan/Code_Snippets_By_HMK_CodeWeb_nz6EWS0Va" width="100%" height="400"  alt="Project Logo"/>
 </p>
 
 # Code Snippets
@@ -769,3 +769,4 @@ function debounce(fn, delay) {
 ```
 
 ---
+
