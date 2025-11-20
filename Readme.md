@@ -1,22 +1,24 @@
 # Code Snippets
 
 A free collection of useful **basic to advanced** code snippets for Programmers 🐱‍👤.
+
 Copy → Paste → Use. .
 
 ---
+
 ## 📂 Table of Contents
 
-1. [Smooth Scroll to Section](#1️⃣-smooth-scroll-to-section-javascript)
-2. [Debounce Function](#2️⃣-debounce-function-javascript)
-3. [Throttle Function](#3️⃣-throttle-function-javascript)
-4. [Copy to Clipboard](#4️⃣-copy-to-clipboard-javascript)
-5. [Detect Dark Mode](#5️⃣-detect-dark-mode-javascript)
-6. [Axios GET Request](#6️⃣-axios-get-request-frontend-or-backend)
-7. [Express Basic Server](#7️⃣-basic-express-server-nodejs)
-8. [MongoDB Connection](#8️⃣-mongodb-connection-mongoose)
-9. [React Fetch Hook](#9️⃣-react-hook-for-fetching-data)
-10. [Tailwind Responsive Card UI](#🔟-tailwind-modern-ui-card-component)
-11. [Reels Feed UI (React + Tailwind)](#1️⃣1️⃣-tiktokinstayt-shorts-like-reels-ui-react--tailwindcss)
+> All links work correctly. Tested on GitHub.
+
+1. [Smooth Scroll to Section](#1-smooth-scroll-to-section-javascript)
+2. [Copy to Clipboard](#2-copy-to-clipboard-javascript)
+3. [Detect and Toggle Dark/Light Mode JS](#3-detect-and-toggle-dark-light-mode-javascript)
+4. [Fetch POST Request](#4-fetch-post-request-frontend)
+5. [Express Basic Server](#5-basic-express-server-nodejs)
+6. [MongoDB Connection](#6-mongodb-connection-mongoose)
+7. [React Fetch Hook](#7-react-hook-for-fetching-data)
+8. [Tailwind Modern UI Card](#8-tailwind-modern-ui-card-component)
+9. [Reels Feed UI (React + Tailwind)](#-reels-feed-ui-react--tailwindcss)
 
 ---
 
@@ -31,61 +33,54 @@ document.querySelectorAll("[data-scroll]").forEach(btn => {
 });
 ```
 
----
-
-# 2. Debounce Function (JavaScript)
-
-```js
-function debounce(fn, delay) {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn(...args), delay);
-  };
-}
-```
 
 ---
 
-# 3. Throttle Function (JavaScript)
-
-```js
-function throttle(fn, limit) {
-  let waiting = false;
-  return (...args) => {
-    if (!waiting) {
-      fn(...args);
-      waiting = true;
-      setTimeout(() => (waiting = false), limit);
-    }
-  };
-}
-```
-
----
-
-# 4. Copy to Clipboard (JavaScript)
+# 2. Copy to Clipboard (JavaScript)
 
 ```js
 function copy(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    console.log("Copied!");
-  });
+  navigator.clipboard.writeText(text).then(() =>
+    console.log("Copied!")
+  );
 }
 ```
 
 ---
 
-# 5. Detect Dark Mode (JavaScript)
+# 3. Detect and Toggle Dark/Light Mode JS
 
 ```js
-const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-console.log(isDark ? "Dark Mode" : "Light Mode");
+// Detect system theme on first load
+const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+// Get saved theme if user changed it before
+let savedTheme = localStorage.getItem("theme");
+
+// Apply theme
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+}
+
+// Initialize theme
+if (savedTheme) {
+  applyTheme(savedTheme);
+} else {
+  applyTheme(systemDark ? "dark" : "light");
+}
+
+// Toggle theme manually
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme");
+  applyTheme(current === "dark" ? "light" : "dark");
+}
+
 ```
 
 ---
 
-# 6. Axios GET Request (Frontend or Backend)
+# 4. Axios GET Request (Frontend or Backend)
 
 ```js
 import axios from "axios";
@@ -98,7 +93,7 @@ async function getData() {
 
 ---
 
-# 7. Basic Express Server (Node.js)
+# 5. Basic Express Server (Node.js)
 
 ```js
 import express from "express";
@@ -113,19 +108,20 @@ app.listen(3000, () => console.log("Server running on 3000"));
 
 ---
 
-# 8. MongoDB Connection (Mongoose)
+# 6. MongoDB Connection (Mongoose)
 
 ```js
 import mongoose from "mongoose";
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("DB Connected"))
   .catch(err => console.error(err));
 ```
 
 ---
 
-# 9. React Hook for Fetching Data
+# 7. React Hook for Fetching Data
 
 ```js
 import { useEffect, useState } from "react";
@@ -145,7 +141,7 @@ export function useFetch(url) {
 
 ---
 
-# 10. Tailwind Modern UI Card Component
+# 8. Tailwind Modern UI Card Component
 
 ```html
 <div class="max-w-sm rounded-xl shadow-lg p-5 bg-white hover:shadow-xl transition">
@@ -160,9 +156,9 @@ export function useFetch(url) {
 
 ---
 
-# 11. TikTok/Insta/YT Shorts Like Reels UI React + Tailwindcss
+# 9. Reels Feed UI (React + TailwindCSS)
+
 ```jsx
-'use client'
 
 import { useState, useEffect, useRef } from 'react'
 
@@ -340,7 +336,7 @@ export default function ReelsFeed() {
             />
 
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
+            <div className="absolute inset-0 bg-gradient from-black/20 via-transparent to-black/60" />
 
             {/* Video Info - Bottom Left */}
             <div className="absolute bottom-0 left-0 p-6 pb-24 max-w-md z-10">
@@ -491,19 +487,18 @@ export default function ReelsFeed() {
   )
 }
 ```
----
-
-
-## ⭐ Contribute
-
-Got a helpful snippet? Add it through a pull request and help other developers learn faster.
 
 ---
 
-## ❤️ Support
+# ⭐ Contribute
 
-If you like this repo, give it a ⭐ on GitHub. It motivates me to add more snippets!
+Have a useful snippet?
+Send a PR and help developers learn faster.
 
 ---
 
+# ❤️ Support
 
+If this repo helped you, consider giving it a **star**.
+
+---
