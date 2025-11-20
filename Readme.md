@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://ik.imagekit.io/hassaan/Code_Snippets_By_HMK_CodeWeb_nz6EWS0Va" width="100%" height="300"  alt="Project Logo"/>
+</p>
+
 # Code Snippets
 
 A free collection of useful **basic to advanced** code snippets for Programmers 🐱‍👤.
@@ -6,184 +10,345 @@ Copy → Paste → Use. .
 
 ---
 
-## 📂 Table of Contents
+# 📦 Table of Contents (30 Snippets)
 
-> All links work correctly. Tested on GitHub.
-
-1. [Smooth Scroll to Section](#1-smooth-scroll-to-section-javascript)
-2. [Copy to Clipboard](#2-copy-to-clipboard-javascript)
-3. [Detect and Toggle Dark Light Mode jacascript](#3-detect-and-toggle-dark-light-mode-jacascript)
-4. [Fetch POST Request ](#4-fetch-post-request)
-5. [Express Basic Server](#5-basic-express-server-nodejs)
-6. [MongoDB Connection](#6-mongodb-connection-mongoose)
-7. [React Fetch Hook](#7-react-hook-for-fetching-data)
-8. [Tailwind Modern UI Card](#8-tailwind-modern-ui-card-component)
-9. [Reels Feed UI React Tailwindcss](#9-reels-feed-ui-react-tailwindcss)
+1. [Smooth Scroll to Section](#1-smooth-scroll-to-section)
+2. [Copy to Clipboard](#2-copy-to-clipboard)
+3. [Detect + Toggle Dark/Light Mode](#3-detect--toggle-darklight-mode)
+4. [Fetch POST Request](#4-fetch-post-request)
+5. [Fetch GET With Error Handling](#5-fetch-get-with-error-handling)
+6. [Axios POST With Headers](#6-axios-post-with-headers)
+7. [Express Basic Server](#7-express-basic-server)
+8. [Express Middleware: Auth Check](#8-express-auth-middleware)
+9. [MongoDB Connection](#9-mongodb-connection)
+10. [Create Mongoose Model](#10-create-mongoose-model)
+11. [JWT Token Generate](#11-generate-jwt-token)
+12. [JWT Middleware Verify](#12-verify-jwt-token)
+13. [Password Hashing (bcrypt)](#13-password-hashing-bcrypt)
+14. [File Upload With Multer](#14-file-upload-with-multer)
+15. [Rate Limiting Middleware](#15-rate-limiting-middleware)
+16. [CORS Setup](#16-cors-setup)
+17. [React Fetch Hook](#17-react-fetch-hook)
+18. [React Debounce Hook](#18-react-debounce-hook)
+19. [React LocalStorage Hook](#19-react-localstorage-hook)
+20. [React Protected Route](#20-react-protected-route)
+21. [Scroll to Top on Route Change (React)](#21-scroll-to-top-react)
+22. [Tailwind Modern Card UI](#22-tailwind-modern-card)
+23. [Reels Feed UI React Tailwindcss](#23-reels-feed-ui-react-tailwindcss)
+24. [CSS Glassmorphism UI](#24-css-glassmorphism)
+25. [LocalStorage With Expiry](#25-localstorage-with-expiry)
+26. [Generate Unique IDs](#26-generate-unique-ids)
+27. [Validate Email](#27-validate-email)
+28. [Download File from URL](#28-download-file-url)
+29. [Throttle Function](#29-throttle-function)
+30. [Debounce Function](#30-debounce-function)
 
 ---
 
-# 1. Smooth Scroll to Section (JavaScript)
+# 1. Smooth Scroll to Section
 
 ```js
-document.querySelectorAll("[data-scroll]").forEach(btn => {
+document.querySelectorAll("[data-scroll]").forEach((btn) => {
   btn.addEventListener("click", () => {
-    const target = document.querySelector(btn.dataset.scroll);
-    target.scrollIntoView({ behavior: "smooth" });
+    document
+      .querySelector(btn.dataset.scroll)
+      .scrollIntoView({ behavior: "smooth" });
   });
 });
 ```
 
-
 ---
 
-# 2. Copy to Clipboard (JavaScript)
+# 2. Copy to Clipboard
 
 ```js
-function copy(text) {
-  navigator.clipboard.writeText(text).then(() =>
-    console.log("Copied!")
-  );
-}
+navigator.clipboard.writeText("Copied text!");
 ```
 
 ---
 
-# 3. Detect and Toggle Dark Light Mode jacascript
+# 3. Detect + Toggle Dark/Light Mode
 
 ```js
-// Detect system theme on first load
 const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-// Get saved theme if user changed it before
-let savedTheme = localStorage.getItem("theme");
-
-// Apply theme
-function applyTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem("theme", theme);
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  localStorage.setItem("theme", t);
 }
 
-// Initialize theme
-if (savedTheme) {
-  applyTheme(savedTheme);
-} else {
-  applyTheme(systemDark ? "dark" : "light");
-}
+applyTheme(localStorage.getItem("theme") || (systemDark ? "dark" : "light"));
 
-// Toggle theme manually
 function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme");
+  const current = document.documentElement.dataset.theme;
   applyTheme(current === "dark" ? "light" : "dark");
 }
-
 ```
 
 ---
 
-# 4. Fetch POST Request 
+# 4. Fetch POST Request
 
 ```js
 async function postData() {
-  try {
-    const res = await fetch("https://api.example.com/data", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer YOUR_TOKEN_HERE" // optional
-      },
-      body: JSON.stringify({
-        username: "Hassan",
-        age: 22,
-        active: true
-      })
-    });
-    if (!res.ok) {
-      throw new Error("Request failed: " + res.status);
-    }
-    const data = await res.json();
-    console.log("Response:", data);
-  } catch (err) {
-    console.error("Error:", err.message);
-  }
-}
-postData();
+  const res = await fetch("/api/user", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: "Hassan", age: 21 }),
+  });
 
+  const data = await res.json();
+  console.log(data);
+}
 ```
 
 ---
 
-# 5. Basic Express Server (Node.js)
+# 5. Fetch GET With Error Handling
+
+```js
+async function getData() {
+  try {
+    const res = await fetch("/api/products");
+    if (!res.ok) throw new Error("Failed request");
+    return await res.json();
+  } catch (e) {
+    console.error(e);
+  }
+}
+```
+
+---
+
+# 6. Axios POST With Headers
+
+```js
+axios.post(
+  "/api/login",
+  {
+    username: "admin",
+    password: "1234",
+  },
+  {
+    headers: { Authorization: "Bearer token" },
+  }
+);
+```
+
+---
+
+# 7. Express Basic Server
 
 ```js
 import express from "express";
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Hello Developer!");
+app.get("/", (req, res) => res.send("API Running"));
+
+app.listen(3000);
+```
+
+---
+
+# 8. Express Auth Middleware
+
+```js
+function auth(req, res, next) {
+  if (!req.headers.token) return res.status(401).send("Unauthorized");
+  next();
+}
+export default auth;
+```
+
+---
+
+# 9. MongoDB Connection
+
+```js
+import mongoose from "mongoose";
+
+export async function connectDB() {
+  await mongoose.connect(process.env.MONGO_URI);
+  console.log("MongoDB Connected");
+}
+```
+
+---
+
+# 10. Create Mongoose Model
+
+```js
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
 });
 
-app.listen(3000, () => console.log("Server running on 3000"));
+export const User = mongoose.model("User", userSchema);
 ```
 
 ---
 
-# 6. MongoDB Connection (Mongoose)
+# 11. Generate JWT Token
 
 ```js
-// db.js
-import mongoose from "mongoose";
-export async function connectDB() {
+import jwt from "jsonwebtoken";
+
+export function createToken(userId) {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+}
+```
+
+---
+
+# 12. Verify JWT Token
+
+```js
+import jwt from "jsonwebtoken";
+
+export function verifyToken(req, res, next) {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
-      dbName: process.env.DB_NAME || "myDatabase",
-    });
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error("MongoDB Connection Error:", error.message);
-    process.exit(1);
+    const token = req.headers.authorization?.split(" ")[1];
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch {
+    res.status(403).send("Invalid token");
   }
 }
-
 ```
 
 ---
 
-# 7. React Hook for Fetching Data
+# 13. Password Hashing (bcrypt)
 
 ```js
-import { useEffect, useState } from "react";
+import bcrypt from "bcrypt";
+const hashed = await bcrypt.hash("mypassword", 10);
+```
 
+---
+
+# 14. File Upload With Multer
+
+```js
+import multer from "multer";
+
+const upload = multer({ dest: "uploads/" });
+       app.post("/upload", upload.single("file"), (req, res)=>{
+  res.send("Uploaded")
+ )};
+```
+
+---
+
+# 15. Rate Limiting Middleware
+
+```js
+const rate = {};
+export function rateLimit(req, res, next) {
+  const ip = req.ip;
+  rate[ip] = (rate[ip] || 0) + 1;
+  if (rate[ip] > 50) return res.status(429).send("Too many requests");
+  next();
+}
+```
+
+---
+
+# 16. CORS Setup
+
+```js
+import cors from "cors";
+app.use(cors({ origin: "*" }));
+```
+
+---
+
+# 17. React Fetch Hook
+
+```jsx
 export function useFetch(url) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     fetch(url)
-      .then(res => res.json())
+      .then((r) => r.json())
       .then(setData);
   }, [url]);
-
   return data;
 }
 ```
 
 ---
 
-# 8. Tailwind Modern UI Card Component
+# 18. React Debounce Hook
+
+```jsx
+export function useDebounce(value, delay = 400) {
+  const [v, setV] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setV(value), delay);
+    return () => clearTimeout(t);
+  }, [value]);
+  return v;
+}
+```
+
+---
+
+# 19. React LocalStorage Hook
+
+```jsx
+export function useLocal(key, initial) {
+  const [value, setValue] = useState(
+    () => JSON.parse(localStorage.getItem(key)) || initial
+  );
+  useEffect(() => localStorage.setItem(key, JSON.stringify(value)), [value]);
+  return [value, setValue];
+}
+```
+
+---
+
+# 20. React Protected Route
+
+```jsx
+export function Protected({ children }) {
+  const logged = localStorage.getItem("auth");
+  return logged ? children : <Navigate to="/login" />;
+}
+```
+
+---
+
+# 21. Scroll to Top (React Router)
+
+```jsx
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, [location.pathname]);
+```
+
+---
+
+# 22. Tailwind Modern Card
 
 ```html
-<div class="max-w-sm rounded-xl shadow-lg p-5 bg-white hover:shadow-xl transition">
-  <img src="https://picsum.photos/400" class="rounded-lg mb-3" />
-  <h2 class="text-xl font-semibold">Modern UI Card</h2>
-  <p class="text-gray-600 mt-1">A clean reusable card template.</p>
-  <button class="mt-4 bg-black text-white px-4 py-2 rounded-lg">
-    Explore
-  </button>
+<div class="p-5 max-w-sm bg-white rounded-xl shadow hover:shadow-lg transition">
+  <img src="https://picsum.photos/400" class="rounded-lg" />
+  <h2 class="mt-3 text-lg font-semibold">Modern UI</h2>
+  <p class="text-gray-600">Reusable card template</p>
 </div>
 ```
 
 ---
 
-# 9. Reels Feed UI React Tailwindcss
+# 23. Reels Feed UI React Tailwindcss
+
+````Reels Feed UI React Tailwindcss
 
 ```jsx
 
@@ -513,19 +678,94 @@ export default function ReelsFeed() {
     </div>
   )
 }
+````
+
+---
+
+# 24. CSS Glassmorphism
+
+```css
+.glass {
+  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+}
 ```
 
 ---
 
-# ⭐ Contribute
+# 25. LocalStorage With Expiry
 
-Have a useful snippet?
-Send a PR and help developers learn faster.
+```js
+function setExp(key, value, minutes) {
+  const item = { value, expiry: Date.now() + minutes * 60000 };
+  localStorage.setItem(key, JSON.stringify(item));
+}
+function getExp(key) {
+  const item = JSON.parse(localStorage.getItem(key));
+  if (!item || Date.now() > item.expiry) return null;
+  return item.value;
+}
+```
 
 ---
 
-# ❤️ Support
+# 26. Generate Unique IDs
 
-If this repo helped you, consider giving it a **star**.
+```js
+const id = crypto.randomUUID();
+```
+
+---
+
+# 27. Validate Email
+
+```js
+/^\S+@\S+\.\S+$/.test("user@mail.com");
+```
+
+---
+
+# 28. Download File URL
+
+```js
+function download(url) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = url.split("/").pop();
+  a.click();
+}
+```
+
+---
+
+# 29. Throttle Function
+
+```js
+function throttle(fn, limit) {
+  let wait = false;
+  return (...args) => {
+    if (!wait) {
+      fn(...args);
+      wait = true;
+      setTimeout(() => (wait = false), limit);
+    }
+  };
+}
+```
+
+---
+
+# 30. Debounce Function
+
+```js
+function debounce(fn, delay) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), delay);
+  };
+}
+```
 
 ---
