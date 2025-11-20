@@ -12,13 +12,13 @@ Copy → Paste → Use. .
 
 1. [Smooth Scroll to Section](#1-smooth-scroll-to-section-javascript)
 2. [Copy to Clipboard](#2-copy-to-clipboard-javascript)
-3. [Detect and Toggle Dark/Light Mode JS](#3-detect-and-toggle-dark-light-mode-javascript)
-4. [Fetch POST Request](#4-fetch-post-request-frontend)
+3. [Detect and Toggle Dark Light Mode jacascript](#3-detect-and-toggle-dark-light-mode-jacascript)
+4. [Fetch POST Request ](#4-fetch-post-request)
 5. [Express Basic Server](#5-basic-express-server-nodejs)
 6. [MongoDB Connection](#6-mongodb-connection-mongoose)
 7. [React Fetch Hook](#7-react-hook-for-fetching-data)
 8. [Tailwind Modern UI Card](#8-tailwind-modern-ui-card-component)
-9. [Reels Feed UI (React + Tailwind)](#-reels-feed-ui-react--tailwindcss)
+9. [Reels Feed UI React Tailwindcss](#9-reels-feed-ui-react-tailwindcss)
 
 ---
 
@@ -48,7 +48,7 @@ function copy(text) {
 
 ---
 
-# 3. Detect and Toggle Dark/Light Mode JS
+# 3. Detect and Toggle Dark Light Mode jacascript
 
 ```js
 // Detect system theme on first load
@@ -80,15 +80,34 @@ function toggleTheme() {
 
 ---
 
-# 4. Axios GET Request (Frontend or Backend)
+# 4. Fetch POST Request 
 
 ```js
-import axios from "axios";
-
-async function getData() {
-  const res = await axios.get("https://api.example.com/data");
-  console.log(res.data);
+async function postData() {
+  try {
+    const res = await fetch("https://api.example.com/data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer YOUR_TOKEN_HERE" // optional
+      },
+      body: JSON.stringify({
+        username: "Hassan",
+        age: 22,
+        active: true
+      })
+    });
+    if (!res.ok) {
+      throw new Error("Request failed: " + res.status);
+    }
+    const data = await res.json();
+    console.log("Response:", data);
+  } catch (err) {
+    console.error("Error:", err.message);
+  }
 }
+postData();
+
 ```
 
 ---
@@ -111,12 +130,20 @@ app.listen(3000, () => console.log("Server running on 3000"));
 # 6. MongoDB Connection (Mongoose)
 
 ```js
+// db.js
 import mongoose from "mongoose";
+export async function connectDB() {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      dbName: process.env.DB_NAME || "myDatabase",
+    });
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error("MongoDB Connection Error:", error.message);
+    process.exit(1);
+  }
+}
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("DB Connected"))
-  .catch(err => console.error(err));
 ```
 
 ---
@@ -156,7 +183,7 @@ export function useFetch(url) {
 
 ---
 
-# 9. Reels Feed UI (React + TailwindCSS)
+# 9. Reels Feed UI React Tailwindcss
 
 ```jsx
 
