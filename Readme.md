@@ -42,6 +42,7 @@ Copy → Paste → Use. .
 28. [Download File from URL](#28-download-file-url)
 29. [Throttle Function](#29-throttle-function)
 30. [Debounce Function](#30-debounce-function)
+31. [Custom Scroll bar Css](#31-custom-scroll-bar-css)
 
 ---
 
@@ -772,7 +773,32 @@ function debounce(fn, delay) {
   };
 }
 ```
+# 31. Custom Scroll bar Css
+```css
+<style>
+      ::-webkit-scrollbar {
+  width: 10px;
+}
 
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #F97316;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #f97416a1;
+}
+    </style>
+```
 ---
+
 
 
