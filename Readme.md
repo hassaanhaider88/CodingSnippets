@@ -43,6 +43,7 @@ Copy → Paste → Use. .
 29. [Throttle Function](#29-throttle-function)
 30. [Debounce Function](#30-debounce-function)
 31. [Custom Scroll bar Css](#31-custom-scroll-bar-css)
+32. [Cloudinary ImageUploader SetUp](#32-cloudinary-imageuploader-setup)
 
 ---
 
@@ -798,7 +799,95 @@ function debounce(fn, delay) {
 }
     </style>
 ```
+
+# 32 Cloudinary Uploader Setup
+A. Cloudinary config (cloudinary.js)
+```js
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
+
+export default cloudinary;
+```
+B. Multer setup (multer.js)
+```js
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+
+const upload = multer({ storage });
+
+export default upload;
+
+```
+C. Upload route (uploadRoute.js)
+```js
+import express from "express";
+import upload from "./multer.js";
+import cloudinary from "./cloudinary.js";
+
+const router = express.Router();
+
+router.post("/upload", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file received" });
+    }
+
+    const result = await cloudinary.uploader.upload_stream(
+      { folder: "myUploads" },
+      (error, uploadResult) => {
+        if (error) {
+          console.log(error);
+          return res.status(500).json({ message: "Cloudinary upload failed" });
+        }
+
+        return res.status(200).json({
+          url: uploadResult.secure_url,
+          public_id: uploadResult.public_id,
+        });
+      }
+    );
+
+    // Send buffer to Cloudinary
+    result.end(req.file.buffer);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+export default router;
+
+```
+React Example
+```js
+const handleUpload = async (e) => {
+  const file = e.target.files[0];
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await fetch("http://localhost:5000/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await res.json();
+  console.log("Uploaded Image URL:", data.url);
+};
+
+```
+File input
+```html
+<input type="file" onChange={handleUpload} />
+```
 ---
+
 
 
 
