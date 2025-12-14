@@ -146,10 +146,12 @@ axios.post(
 ```js
 import express from "express";
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => res.send("API Running"));
 
-app.listen(3000);
+app.listen(PORT, () => console.log(`Server Running on ${PORT}`));
+
 ```
 
 ---
@@ -887,6 +889,7 @@ File input
 <input type="file" onChange={handleUpload} />
 ```
 ---
+
 
 
 
