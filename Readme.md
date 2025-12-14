@@ -44,6 +44,7 @@ Copy → Paste → Use. .
 30. [Debounce Function](#30-debounce-function)
 31. [Custom Scroll bar Css](#31-custom-scroll-bar-css)
 32. [Cloudinary ImageUploader SetUp](#32-cloudinary-imageuploader-setup)
+33. [Request Logger](#33-request-logger)
 
 ---
 
@@ -888,7 +889,18 @@ File input
 ```html
 <input type="file" onChange={handleUpload} />
 ```
+33 Request Logger
+```js
+const requestLogger = (req, res, next) => {
+  console.log(`[${req.method}] ${req.originalUrl}`);
+  next();
+};
+
+module.exports = requestLogger;
+
+```
 ---
+
 
 
 
