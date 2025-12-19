@@ -45,6 +45,7 @@ Copy → Paste → Use. .
 31. [Custom Scroll bar Css](#31-custom-scroll-bar-css)
 32. [Cloudinary ImageUploader SetUp](#32-cloudinary-imageuploader-setup)
 33. [Request Logger](#33-request-logger)
+34. [Download Image](#34-download-image)
 
 ---
 
@@ -899,7 +900,30 @@ const requestLogger = (req, res, next) => {
 module.exports = requestLogger;
 
 ```
+
+34 Download Image 
+1. without library
+```js
+
+ const handleCertificateDown = (url) => {
+    const a = document.createElement("a");
+    a.href = url; 
+    a.download = ""; 
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+```
+2.
+```js
+import { saveAs } from "file-saver";
+function DownloadImag(url){
+ saveAs(url, "certificate.jpg");
+}
+```
+
 ---
+
 
 
 
