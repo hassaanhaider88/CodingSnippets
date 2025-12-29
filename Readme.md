@@ -46,7 +46,7 @@ Copy → Paste → Use. .
 32. [Cloudinary ImageUploader SetUp](#32-cloudinary-imageuploader-setup)
 33. [Request Logger](#33-request-logger)
 34. [MutliValueInputTag](#34-mutliValueinputtag)
-
+35. [Controled Form](#35-controled-forom)
 ---
 
 # 1. Smooth Scroll to Section
@@ -955,9 +955,33 @@ const MutliValueInputTag = ({ tags, handleTagsChange, placeholder }) => {
 };
 
 export default MutliValueInputTag;
+```
+35 Controled From 
+```js
+## State
+const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+});
+## inpute
+<input
+  required
+  value={formData.name}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      name: e.target.value,
+    })
+  }
+  type="text"
+  placeholder="Name Goes Here"
+/>
+
 
 ```
+
 ---
+
 
 
 
