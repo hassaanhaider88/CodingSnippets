@@ -47,6 +47,7 @@ Copy → Paste → Use. .
 33. [Request Logger](#33-request-logger)
 34. [MutliValueInputTag](#34-mutliValueinputtag)
 35. [Controled Form](#35-controled-forom)
+36. [URL.createObjectURL()](#36-URL.createObjectURL)
 ---
 
 # 1. Smooth Scroll to Section
@@ -956,7 +957,7 @@ const MutliValueInputTag = ({ tags, handleTagsChange, placeholder }) => {
 
 export default MutliValueInputTag;
 ```
-35 Controled From 
+# 35 Controled From 
 ```js
 ## State
 const [formData, setFormData] = useState({
@@ -976,11 +977,29 @@ const [formData, setFormData] = useState({
   type="text"
   placeholder="Name Goes Here"
 />
+```
+3 36 URL.createObjectURL()
+```js
+<input type="file" id="InputFile" accept="image/*">
+<img id="preview" width="200" />
 
+<script>
+const input = document.getElementById("InputFile");
+const preview = document.getElementById("preview");
+
+input.addEventListener("change", function () {
+  const file = input.files[0];
+  if (!file) return;
+
+  const imageURL = URL.createObjectURL(file);
+  preview.src = imageURL;
+});
+</script>
 
 ```
 
 ---
+
 
 
 
