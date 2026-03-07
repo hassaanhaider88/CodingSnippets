@@ -47,7 +47,8 @@ Copy → Paste → Use. .
 33. [Request Logger](#33-request-logger)
 34. [MutliValueInputTag](#34-mutliValueinputtag)
 35. [Controled Form](#35-controled-forom)
-36. [URL.createObjectURL()](#36-URL.createObjectURL)
+36. [URL.createObjectURL](#36-URL.createObjectURL)
+37. [Adding Maps](#37-Adding-Maps)
 ---
 
 # 1. Smooth Scroll to Section
@@ -1010,7 +1011,7 @@ const [formData, setFormData] = useState({
   placeholder="Name Goes Here"
 />
 ```
-3 36 URL.createObjectURL()
+# 36 URL.createObjectURL()
 ```js
 <input type="file" id="InputFile" accept="image/*">
 <img id="preview" width="200" />
@@ -1030,7 +1031,308 @@ input.addEventListener("change", function () {
 
 ```
 
+# 37 Adding Maps
+```js
+
+import React, { useEffect, useRef, useState } from "react";
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MapSection — Attractive Leaflet Map with Dark Theme
+// Uses CartoDB Dark Matter tiles (free, no API key needed)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const MapSection = ({ userLocation }) => {
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const [distance, setDistance] = useState(null);
+  const [duration, setDuration] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const restaurantLocation = [31.8237759104478, 72.8014905575502];
+
+  useEffect(() => {
+    // Dynamically load Leaflet + plugins
+    const loadLeaflet = async () => {
+      if (mapInstanceRef.current) return;
+
+      const L = (await import("leaflet")).default;
+      await import("leaflet/dist/leaflet.css");
+
+      if (!mapRef.current) return;
+
+      // ── Create map with dark CartoDB tiles ──
+      const map = L.map(mapRef.current, {
+        center: userLocation || restaurantLocation,
+        zoom: 14,
+        zoomControl: false,
+      });
+
+      mapInstanceRef.current = map;
+
+      // 🌑 CartoDB Dark Matter — free, no key, very attractive
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        {
+          attribution:
+            '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+          subdomains: "abcd",
+          maxZoom: 20,
+        }
+      ).addTo(map);
+
+      // ── Custom zoom control (bottom right) ──
+      L.control.zoom({ position: "bottomright" }).addTo(map);
+
+      // ── Custom SVG markers ──
+      const userIcon = L.divIcon({
+        className: "",
+        html: `
+          <div style="
+            width:20px; height:20px;
+            background: #4FC3F7;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 6px rgba(79,195,247,0.3), 0 0 20px rgba(79,195,247,0.6);
+            animation: pulse 2s infinite;
+          "></div>
+          <style>
+            @keyframes pulse {
+              0%   { box-shadow: 0 0 0 6px rgba(79,195,247,0.3), 0 0 20px rgba(79,195,247,0.6); }
+              50%  { box-shadow: 0 0 0 12px rgba(79,195,247,0.1), 0 0 30px rgba(79,195,247,0.4); }
+              100% { box-shadow: 0 0 0 6px rgba(79,195,247,0.3), 0 0 20px rgba(79,195,247,0.6); }
+            }
+          </style>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+      });
+
+      const restaurantIcon = L.divIcon({
+        className: "",
+        html: `
+          <div style="
+            display:flex; align-items:center; justify-content:center;
+            width:36px; height:36px;
+            background: linear-gradient(135deg, #FF6B35, #F7C59F);
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            border: 2px solid #fff;
+            box-shadow: 0 4px 15px rgba(255,107,53,0.6);
+          ">
+            <span style="transform:rotate(45deg); font-size:16px;">🍽️</span>
+          </div>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 36],
+      });
+
+      // ── Markers ──
+      if (userLocation) {
+        L.marker(userLocation, { icon: userIcon })
+          .addTo(map)
+          .bindPopup(
+            `<div style="font-family:sans-serif; font-size:13px; font-weight:600; color:#1a1a2e;">📍 Aap yahan hain</div>`
+          );
+      }
+
+      L.marker(restaurantLocation, { icon: restaurantIcon })
+        .addTo(map)
+        .bindPopup(
+          `<div style="font-family:sans-serif; font-size:13px; font-weight:600; color:#1a1a2e;">🍽️ Restaurant</div>`
+        )
+        .openPopup();
+
+      // ── Draw route using OSRM (free routing API) ──
+      if (userLocation) {
+        const start = `${userLocation[1]},${userLocation[0]}`;
+        const end = `${restaurantLocation[1]},${restaurantLocation[0]}`;
+
+        try {
+          const res = await fetch(
+            `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson`
+          );
+          const data = await res.json();
+
+          if (data.routes && data.routes[0]) {
+            const route = data.routes[0];
+            const coords = route.geometry.coordinates.map(([lng, lat]) => [
+              lat,
+              lng,
+            ]);
+
+            // Glowing route line
+            L.polyline(coords, {
+              color: "#FF6B35",
+              weight: 5,
+              opacity: 0.9,
+              dashArray: null,
+              lineCap: "round",
+              lineJoin: "round",
+            }).addTo(map);
+
+            // Outer glow
+            L.polyline(coords, {
+              color: "#FF6B35",
+              weight: 12,
+              opacity: 0.2,
+            }).addTo(map);
+
+            // Fit map to route
+            map.fitBounds(
+              L.latLngBounds([userLocation, restaurantLocation]).pad(0.2)
+            );
+
+            const km = (route.distance / 1000).toFixed(1);
+            const mins = Math.round(route.duration / 60);
+            setDistance(km);
+            setDuration(mins);
+          }
+        } catch (err) {
+          console.error("Route fetch failed", err);
+          map.fitBounds(
+            L.latLngBounds([userLocation, restaurantLocation]).pad(0.2)
+          );
+        }
+      }
+
+      setLoading(false);
+    };
+
+    loadLeaflet();
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLocation]);
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        borderRadius: "16px",
+        overflow: "hidden",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
+        fontFamily: "'Segoe UI', sans-serif",
+      }}
+    >
+      {/* ── Loading overlay ── */}
+      {loading && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "#0f0f1a",
+            zIndex: 999,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "12px",
+          }}
+        >
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              border: "3px solid #333",
+              borderTop: "3px solid #FF6B35",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }}
+          />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <p style={{ color: "#888", fontSize: "14px" }}>Map load ho raha hai…</p>
+        </div>
+      )}
+
+      {/* ── Map container ── */}
+      <div ref={mapRef} style={{ height: "500px", width: "100%" }} />
+
+      {/* ── Info card overlay ── */}
+      {!loading && distance && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "20px",
+            left: "20px",
+            zIndex: 500,
+            background: "rgba(15,15,26,0.92)",
+            backdropFilter: "blur(12px)",
+            border: "1px solid rgba(255,107,53,0.3)",
+            borderRadius: "12px",
+            padding: "12px 18px",
+            display: "flex",
+            gap: "20px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+          }}
+        >
+          <div style={{ textAlign: "center" }}>
+            <div style={{ color: "#FF6B35", fontSize: "20px", fontWeight: 700 }}>
+              {distance} km
+            </div>
+            <div style={{ color: "#888", fontSize: "11px" }}>Distance</div>
+          </div>
+          <div
+            style={{
+              width: "1px",
+              background: "rgba(255,107,53,0.2)",
+            }}
+          />
+          <div style={{ textAlign: "center" }}>
+            <div style={{ color: "#4FC3F7", fontSize: "20px", fontWeight: 700 }}>
+              ~{duration} min
+            </div>
+            <div style={{ color: "#888", fontSize: "11px" }}>Drive Time</div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Legend ── */}
+      <div
+        style={{
+          position: "absolute",
+          top: "12px",
+          right: "12px",
+          zIndex: 500,
+          background: "rgba(15,15,26,0.85)",
+          backdropFilter: "blur(8px)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: "10px",
+          padding: "8px 12px",
+          fontSize: "12px",
+          color: "#ccc",
+          display: "flex",
+          flexDirection: "column",
+          gap: "6px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div
+            style={{
+              width: "10px",
+              height: "10px",
+              background: "#4FC3F7",
+              borderRadius: "50%",
+              boxShadow: "0 0 6px #4FC3F7",
+            }}
+          />
+          Aap
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ fontSize: "14px" }}>🍽️</div>
+          Restaurant
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MapSection;
+```
 ---
+
 
 
 
