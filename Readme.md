@@ -49,6 +49,7 @@ Copy → Paste → Use. .
 35. [Controled Form](#35-controled-forom)
 36. [URL.createObjectURL](#36-URL.createObjectURL)
 37. [Adding Maps](#37-Adding-Maps)
+38. [Adding URL Slugs](#38-adding-url-slugs)
 ---
 
 # 1. Smooth Scroll to Section
@@ -1330,6 +1331,20 @@ const MapSection = ({ userLocation }) => {
 };
 
 export default MapSection;
+```
+
+38 Adding URL Slugs
+```
+function createSlug(title) {
+    return title
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+console.log(createSlug('HMK CodeWeb - JavaScript'));
+
 ```
 ---
 
