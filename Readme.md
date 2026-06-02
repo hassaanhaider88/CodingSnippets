@@ -1346,15 +1346,23 @@ function createSlug(title) {
 console.log(createSlug('HMK CodeWeb - JavaScript'));
 
 ```
+
+39 Express Middleware For time Defference
+```js
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on("finish", () => {
+        const duration = Date.now() - start;
+        console.log(
+            `${req.method} ${req.originalUrl} - ${duration}ms`
+        );
+    });
+    next();
+});
+
+```
+
 ---
-
-
-
-
-
-
-
-
 
 
 
