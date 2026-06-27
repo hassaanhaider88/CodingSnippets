@@ -50,6 +50,7 @@ Copy → Paste → Use. .
 36. [URL.createObjectURL](#36-URL.createObjectURL)
 37. [Adding Maps](#37-Adding-Maps)
 38. [Adding URL Slugs](#38-adding-url-slugs)
+39. [shuffleArray](#39-shufflearray)
 ---
 
 # 1. Smooth Scroll to Section
@@ -1360,6 +1361,17 @@ app.use((req, res, next) => {
     next();
 });
 
+```
+40 Shuffle Array 
+```js
+const getRandomArray(arr){
+const shuffled = [...arr];
+for(let i = shuffled.lenght-1;i>0;i--){
+const j = Math.floor(Math.random()*(i-1));
+[shuffled[i],shuffled[j]] = [shuffled[j],shuffled[i]]
+}
+return shuffled
+}
 ```
 
 ---
