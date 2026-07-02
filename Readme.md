@@ -51,6 +51,7 @@ Copy → Paste → Use. .
 37. [Adding Maps](#37-Adding-Maps)
 38. [Adding URL Slugs](#38-adding-url-slugs)
 39. [shuffleArray](#39-shufflearray)
+40. [Compressing Video Via ffmpeg)
 ---
 
 # 1. Smooth Scroll to Section
@@ -1376,5 +1377,8 @@ return shuffled
 
 ---
 
-
+41 Compressing Video Via FFpeg
+```js
+ffmpeg -i input.mp4 -c:v libx264 -crf 23 -c:a aac -b:a 128k output.mp4
+```
 
